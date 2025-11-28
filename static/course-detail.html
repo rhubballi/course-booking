@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <div class="logo">
+        <img src="/static/logo5[1].png" alt="QuantAI Logo" style="height: 70px; width: auto; object-fit: contain; position: absolute; top: 20px; left: 20px;">
+    </div>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #0f0f0f;
+            color: #fff;
+        }
+
+        header {
+            padding: 20px;
+            background: #1a1a1a;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .back-btn {
+            background: #ffd700;
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 40px;
+        }
+
+        .course-image img {
+            width: 100%;
+            height: 350px;
+            object-fit: contain;
+            background: #111;
+            padding: 20px;
+            border-radius: 12px;
+        }
+
+        /* Payment Modal Styles */
+        .payment-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .payment-modal.active {
+            display: flex;
+        }
+
+        .payment-modal-content {
+            background: #1a1a1a;
+            border-radius: 12px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            color: #fff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+        }
+
+        .payment-modal-header {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #ffd700;
+        }
+
+        .payment-info {
+            background: #111;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #ffd700;
+        }
+
+        .payment-info-item {
+            display: flex;
+            justify-content: space-between;
+            margin: 8px 0;
+        }
+
+        .close-modal {
+            background: #666;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+
+        .pay-btn {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .pay-btn:hover {
+            background: #45a049;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <span style="font-size:20px;font-weight:bold;">Course Details</span>
+</header>
+
+<div class="container">
+    <div class="course-image">
+        <img id="courseImage" src="">
+    </div>
+
+    <div>
+        <h1 id="courseName" style="color:#ffd700;"></h1>
+        <p id="courseDescription"></p>
+    </div>
+</div>
+
+<!-- Payment Modal -->
+<div id="paymentModal" class="payment-modal">
+    <div class="payment-modal-content">
+        <div class="payment-modal-header">Select Payment Method</div>
+        
+        <!-- Payment Method Selection -->
+        <div id="paymentMethodSelection" style="display: flex; gap: 15px; margin-bottom: 20px;">
+            <button class="payment-method-btn" onclick="selectPaymentMethod('upi')" style="flex: 1; padding: 15px; background: #663399; border: 2px solid #663399; color: white; border-radius: 8px; cursor: pointer; font-weight: bold;">
+                📱 PhonePe/UPI
+            </button>
+            <button class="payment-method-btn" onclick="selectPaymentMethod('razorpay')" style="flex: 1; padding: 15px; background: #1f51ba; border: 2px solid #1f51ba; color: white; border-radius: 8px; cursor: pointer; font-weight: bold;">
+                💳 Razorpay
+            </button>
+        </div>
+
+        <!-- UPI Payment Section -->
+        <div id="upiSection" style="display: none;">
+            <div class="payment-info">
+                <div class="payment-info-item">
+                    <span>Payment Method:</span>
+                    <span>PhonePe/UPI</span>
+                </div>
+                <div class="payment-info-item">
+                    <span>UPI ID:</span>
+                    <span>8008502829@ybl</span>
+                </div>
+                <div class="payment-info-item">
+                    <span>Amount:</span>
+                    <span id="upiAmount">₹99</span>
+                </div>
+            </div>
+            <div style="text-align: center; margin: 20px 0;">
+                <div id="qrCodeContainer" style="display: inline-block; background: white; padding: 10px; border-radius: 8px;"></div>
+            </div>
+            <p style="text-align: center; color: #aaa; font-size: 14px; margin-top: 10px;">Scan with PhonePe App</p>
+            <div style="margin-top: 15px; padding: 15px; background: #2a2a2a; border-radius: 8px; border-left: 4px solid #663399;">
+                <p style="margin: 0; color: #ddd; font-size: 14px;">
+                    <strong>Steps:</strong><br>
+                    1. Open PhonePe app<br>
+                    2. Scan this QR code<br>
+                    3. Complete the payment<br>
+                    4. Your course booking will be confirmed
+                </p>
+            </div>
+            <div class="modal-buttons">
+                <button class="close-modal" onclick="backToPaymentMethod()">Back</button>
+                <button class="pay-btn" id="confirmUpiBtn" onclick="confirmUPIPayment()" style="background: #4CAF50;">Payment Done</button>
+            </div>
+        </div>
+
+        <!-- Razorpay Payment Section -->
+        <div id="razorpaySection" style="display: none;">
+            <div class="payment-info">
+                <div class="payment-info-item">
+                    <span>Course:</span>
+                    <span id="paymentCourseName">---</span>
+                </div>
+                <div class="payment-info-item">
+                    <span>Amount:</span>
+                    <span id="paymentAmount">₹99</span>
+                </div>
+                <div class="payment-info-item">
+                    <span>Name:</span>
+                    <span id="paymentName">---</span>
+                </div>
+                <div class="payment-info-item">
+                    <span>Email:</span>
+                    <span id="paymentEmail">---</span>
+                </div>
+            </div>
+            <p style="color: #aaa; font-size: 14px; margin-top: 15px;">
+                ✅ Supports: UPI, Credit/Debit Cards, Bank Transfer, Wallets
+            </p>
+            <div class="modal-buttons">
+                <button class="close-modal" onclick="backToPaymentMethod()">Back</button>
+                <button class="pay-btn" id="paymentBtn" onclick="processRazorpayPayment()">Pay with Razorpay</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Course definitions and schedule (matches server-side schedule)
+const COURSE_SCHEDULE = {
+    1: { start: '17:00', end: '17:30', date: 'December 1, 2025' },
+    2: { start: '17:45', end: '18:16', date: 'December 1, 2025' }
+};
+
+const courseData = {
+    1: {
+        name: "Artificial Intelligence (AI)",
+        description: "Learn ML, DL, Neural Networks, and AI applications.",
+        // file present in static/ (case-sensitive on some systems)
+        image: "/static/AI-Development-Companies-1.png",
+        totalSeats: 50
+    },
+    2: {
+        name: "Quantum Computing",
+        description: "Learn Qubits, Quantum Gates, and Algorithms.",
+        // use existing PNG; if you prefer the photographic JPG, place it into static/ with name quantum-course.jpg
+        image: "/static/Computacao-Quantica-scaled.png",
+        totalSeats: 30
+    }
+};
+
+// UI: create stats and form elements
+const container = document.querySelector('.container');
+const infoCol = container.querySelectorAll('div')[1];
+
+// Append stats and booking form
+infoCol.insertAdjacentHTML('beforeend', `
+    <div id="stats" style="margin-top:20px;">
+        <div><strong>Booked:</strong> <span id="bookedCount">0</span></div>
+        <div><strong>Total Seats:</strong> <span id="totalSeats">0</span></div>
+        <div><strong>Available:</strong> <span id="availableSeats">0</span></div>
+        <div style="margin-top:10px;"><strong>Starts in:</strong> <span id="countdown">--:--:--</span></div>
+    </div>
+    <div id="bookingList" style="margin-top:20px;">
+        <h4 style="color:#ffd700;">Attendees</h4>
+        <ul id="attendeeList" style="list-style:none;padding-left:0;color:#ddd;font-size:14px;"></ul>
+    </div>
+    <div id="booking" style="margin-top:20px;">
+        <h3 style="color:#ffd700;">Book This Course</h3>
+        <form id="bookingForm">
+            <div style="margin-bottom:8px;"><input id="fullName" required placeholder="Full name" style="padding:8px;width:320px;" /></div>
+            <div style="margin-bottom:8px;"><input id="email" type="email" required placeholder="Email" style="padding:8px;width:320px;" /></div>
+            <div style="margin-bottom:8px;"><input id="phone" required placeholder="Phone number" style="padding:8px;width:320px;" /></div>
+            <div><button id="submitBtn" type="submit" style="background:#ffd700;border:none;padding:10px 18px;border-radius:6px;cursor:pointer;">Book Now</button></div>
+        </form>
+    </div>
+`);
+
+// Get course id from URL query param or sessionStorage
+const urlParams = new URLSearchParams(window.location.search);
+let courseId = urlParams.get('course') || sessionStorage.getItem('courseId') || '1';
+if (!courseData[courseId]) courseId = '1';
+const course = courseData[courseId];
+
+// Populate UI
+document.getElementById('courseName').innerText = course.name;
+document.getElementById('courseDescription').innerText = course.description;
+document.getElementById('courseImage').src = course.image;
+document.getElementById('totalSeats').innerText = course.totalSeats;
+
+// Fallback image handler: use a safe SVG that exists in the repo (or the AI PNG)
+document.getElementById('courseImage').onerror = function () {
+    this.onerror = null;
+    this.src = '/static/quantum-course.svg';
+};
+
+// Load stats from server
+async function loadStats() {
+    try {
+        const res = await fetch('/courses');
+        if (!res.ok) throw new Error('Failed to load courses');
+        const courses = await res.json();
+        const current = courses.find(c => String(c.id) === String(courseId));
+        if (current) {
+            const booked = current.booked_count || 0;
+            const total = current.total_seats || course.totalSeats;
+            const available = Math.max(0, total - booked);
+            document.getElementById('bookedCount').innerText = booked;
+            document.getElementById('totalSeats').innerText = total;
+            document.getElementById('availableSeats').innerText = available;
+            if (available <= 0) {
+                document.getElementById('submitBtn').disabled = true;
+                document.getElementById('submitBtn').innerText = 'Course Full';
+            }
+        }
+    } catch (e) {
+        console.error(e);
+    }
+}
+
+loadStats();
+
+
+
+// Countdown timer to course start
+function startCountdown() {
+    const schedule = COURSE_SCHEDULE[courseId];
+    if (!schedule) return;
+    const dateStr = schedule.date + ' ' + schedule.start; // e.g. "December 1, 2025 17:00"
+    const target = new Date(dateStr);
+
+    function tick() {
+        const now = new Date();
+        let diff = target - now;
+        if (diff < 0) {
+            document.getElementById('countdown').innerText = 'Started';
+            clearInterval(timer);
+            return;
+        }
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        diff -= days * (1000 * 60 * 60 * 24);
+        const hours = Math.floor(diff / (1000 * 60 * 60));
+        diff -= hours * (1000 * 60 * 60);
+        const minutes = Math.floor(diff / (1000 * 60));
+        diff -= minutes * (1000 * 60);
+        const seconds = Math.floor(diff / 1000);
+        document.getElementById('countdown').innerText = `${days}d ${String(hours).padStart(2,'0')}h ${String(minutes).padStart(2,'0')}m ${String(seconds).padStart(2,'0')}s`;
+    }
+
+    tick();
+    const timer = setInterval(tick, 1000);
+}
+
+startCountdown();
+
+// Store booking data for payment processing
+let bookingData = {
+    name: '',
+    email: '',
+    phone: '',
+    courseId: courseId
+};
+
+// Select payment method
+function selectPaymentMethod(method) {
+    document.getElementById('paymentMethodSelection').style.display = 'none';
+    document.getElementById('upiSection').style.display = 'none';
+    document.getElementById('razorpaySection').style.display = 'none';
+    
+    if (method === 'upi') {
+        document.getElementById('upiSection').style.display = 'block';
+        
+        // Generate QR code for UPI
+        setTimeout(() => {
+            const qrContainer = document.getElementById('qrCodeContainer');
+            qrContainer.innerHTML = ''; // Clear previous QR code
+            
+            // UPI payment string format
+            const upiString = 'upi://pay?pa=8008502829@ybl&pn=QuantAI%20Healthcare&am=99&tn=Course%20Booking';
+            
+            // Generate QR code
+            new QRCode(qrContainer, {
+                text: upiString,
+                width: 250,
+                height: 250,
+                colorDark: '#000000',
+                colorLight: '#ffffff',
+                correctLevel: QRCode.CorrectLevel.H
+            });
+        }, 100);
+    } else if (method === 'razorpay') {
+        document.getElementById('razorpaySection').style.display = 'block';
+    }
+}
+
+// Back to payment method selection
+function backToPaymentMethod() {
+    document.getElementById('paymentMethodSelection').style.display = 'flex';
+    document.getElementById('upiSection').style.display = 'none';
+    document.getElementById('razorpaySection').style.display = 'none';
+}
+
+// Open payment modal
+function openPaymentModal(name, email, phone) {
+    bookingData = { name, email, phone, courseId };
+    document.getElementById('paymentMethodSelection').style.display = 'flex';
+    document.getElementById('upiSection').style.display = 'none';
+    document.getElementById('razorpaySection').style.display = 'none';
+    document.getElementById('paymentCourseName').innerText = courseData[courseId].name;
+    document.getElementById('paymentName').innerText = name;
+    document.getElementById('paymentEmail').innerText = email;
+    document.getElementById('paymentModal').classList.add('active');
+}
+
+// Close payment modal
+function closePaymentModal() {
+    document.getElementById('paymentModal').classList.remove('active');
+}
+
+// Confirm UPI Payment
+async function confirmUPIPayment() {
+    if (!confirm('Have you completed the payment via PhonePe?')) {
+        return;
+    }
+
+    const confirmBtn = document.getElementById('confirmUpiBtn');
+    confirmBtn.disabled = true;
+    confirmBtn.innerText = 'Processing...';
+
+    try {
+        // Complete the booking after UPI payment confirmation
+        const res = await fetch('/book', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                user_name: bookingData.name,
+                course_id: parseInt(bookingData.courseId),
+                email: bookingData.email,
+                phone: bookingData.phone,
+                payment_method: 'upi',
+                payment_id: 'upi_' + Date.now()
+            })
+        });
+
+        const body = await res.json().catch(() => null);
+        if (!res.ok) {
+            let errMsg = res.statusText || 'Unknown error';
+            if (body && typeof body === 'object') {
+                errMsg = body.detail || body.message || errMsg;
+            }
+            alert('Booking failed: ' + errMsg);
+            confirmBtn.disabled = false;
+            confirmBtn.innerText = 'Payment Done';
+            return;
+        }
+
+        alert('Payment confirmed! ' + (body && body.message ? body.message : 'You will receive confirmation emails shortly.'));
+        closePaymentModal();
+        document.getElementById('bookingForm').reset();
+        await loadStats();
+
+        confirmBtn.disabled = false;
+        confirmBtn.innerText = 'Payment Done';
+    } catch (err) {
+        console.error(err);
+        alert('Booking failed. Please try again.');
+        confirmBtn.disabled = false;
+        confirmBtn.innerText = 'Payment Done';
+    }
+}
+
+// Process payment with Razorpay
+async function processRazorpayPayment() {
+    
+    // Razorpay payment options
+    const options = {
+        key: "rzp_test_1DP5mmOlF5G5ag", // Razorpay Test Key ID
+        amount: 9900, // Amount in paise (99 rupees = 9900 paise)
+        currency: "INR",
+        name: "QuantAI Learning",
+        description: `${courseData[bookingData.courseId].name} Course`,
+        image: "/static/logo.png",
+        prefill: {
+            name: bookingData.name,
+            email: bookingData.email,
+            contact: bookingData.phone
+        },
+        notes: {
+            course_id: bookingData.courseId,
+            course_name: courseData[bookingData.courseId].name
+        },
+        theme: {
+            color: "#ffd700"
+        },
+        handler: async function(response) {
+            // Payment successful, now complete the booking
+            try {
+                const res = await fetch('/book', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        user_name: bookingData.name,
+                        course_id: parseInt(bookingData.courseId),
+                        email: bookingData.email,
+                        phone: bookingData.phone,
+                        payment_id: response.razorpay_payment_id
+                    })
+                });
+
+                const body = await res.json().catch(() => null);
+                if (!res.ok) {
+                    let errMsg = res.statusText || 'Unknown error';
+                    if (body && typeof body === 'object') {
+                        errMsg = body.detail || body.message || errMsg;
+                    }
+                    alert('Booking failed: ' + errMsg);
+                    return;
+                }
+
+                alert('Payment successful! ' + (body && body.message ? body.message : 'You will receive confirmation emails shortly.'));
+                closePaymentModal();
+                document.getElementById('bookingForm').reset();
+                await loadStats();
+            } catch (err) {
+                console.error(err);
+                alert('Booking failed. Please try again.');
+            }
+        },
+        modal: {
+            ondismiss: function() {
+                alert('Payment cancelled. Please try again.');
+            }
+        }
+    };
+
+    try {
+        const rzp = new Razorpay(options);
+        rzp.open();
+    } catch (err) {
+        console.error('Razorpay error:', err);
+        alert('Payment gateway error. Please try again.');
+    }
+}
+
+// Booking form submit - Show payment modal instead of direct booking
+document.getElementById('bookingForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const name = document.getElementById('fullName').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const phone = document.getElementById('phone').value.trim();
+    if (!name || !email || !phone) return alert('Please fill all fields');
+
+    // Open payment modal instead of booking directly
+    openPaymentModal(name, email, phone);
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,5 @@
+body { font-family: Arial, sans-serif; background:#f5f7fb; color:#222 }
+.container { max-width:900px; margin:40px auto; padding:20px }
+.card { background:#fff; border-radius:8px; box-shadow:0 1px 6px rgba(0,0,0,0.08); padding:16px; margin-bottom:12px }
+button { background:#0b74de; color:#fff; border:none; padding:8px 12px; border-radius:6px; cursor:pointer }
+button[disabled] { background:#ccc; cursor:not-allowed }

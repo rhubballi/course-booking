@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Digital Courses</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #0f0f0f;
+            color: #fff;
+            padding: 40px 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .logo-square {
+            width: 30px;
+            height: 30px;
+            background: #ffd700;
+        }
+        
+        h1 {
+            font-size: 48px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .courses-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .course-card {
+            position: relative;
+            overflow: hidden;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            height: 350px;
+            background: #111;
+        }
+        
+        .course-card:hover {
+            transform: translateY(-10px);
+        }
+        
+        .course-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .course-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+            padding: 30px;
+        }
+        
+        .course-overlay h2 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            color: #ffd700;
+        }
+        
+        .course-overlay p {
+            font-size: 14px;
+            color: #ccc;
+            margin-bottom: 15px;
+        }
+        
+        .book-btn {
+            background: #ffd700;
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">
+        <img src="/static/logo5[1].png" alt="QuantAI Logo" style="height: 70px; width: auto; object-fit: contain; position: absolute; top: 20px; left: 20px;">
+    </div>
+    <h1>Digital Courses</h1>
+</header>
+
+<div class="courses-grid">
+
+    <!-- AI Course Card -->
+    <div class="course-card" onclick="openCourseDetail(1)">
+        <img src="static/AI-development-companies-1.png" alt="AI Course">
+        <div class="course-overlay">
+            <h2>Artificial Intelligence</h2>
+            <p>Build Your Career</p>
+            <button class="book-btn">Know More →</button>
+        </div>
+    </div>
+
+    <!-- Quantum Course Card -->
+    <div class="course-card" onclick="openCourseDetail(2)">
+        <img src="static/Computacao-Quantica-scaled.png" alt="Quantum Course">
+        <div class="course-overlay">
+            <h2>Quantum Computing</h2>
+            <p>Introductory Course</p>
+            <button class="book-btn">Know More →</button>
+        </div>
+    </div>
+
+</div>
+
+<script>
+function openCourseDetail(courseId) {
+    // save for legacy support and navigate with query param
+    sessionStorage.setItem("courseId", courseId);
+    window.location.href = '/course-detail.html?course=' + encodeURIComponent(courseId);
+}
+</script>
+
+</body>
+</html>
