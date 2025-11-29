@@ -298,10 +298,10 @@ document.getElementById('courseDescription').innerText = course.description;
 document.getElementById('courseImage').src = course.image;
 document.getElementById('totalSeats').innerText = course.totalSeats;
 
-// Fallback image handler: use a safe SVG that exists in the repo (or the AI PNG)
+// Fallback image handler: use the AI image as fallback
 document.getElementById('courseImage').onerror = function () {
     this.onerror = null;
-    this.src = '/static/quantum-course.svg';
+    this.src = '/static/AI-Development-Companies-1.png';
 };
 
 // Load stats from server
