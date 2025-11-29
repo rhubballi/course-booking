@@ -2,7 +2,7 @@
 <html>
 <head>
     <div class="logo">
-        <img src="/static/logo5[1].png" alt="QuantAI Logo" style="height: 70px; width: auto; object-fit: contain; position: absolute; top: 20px; left: 20px;">
+        <img src="/static/logo.png?v=1" alt="QuantAI Logo" style="height: 70px; width: auto; object-fit: contain; position: absolute; top: 20px; left: 20px;">
     </div>
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -140,7 +140,7 @@
 <body>
 
 <header>
-    <span style="font-size:20px;font-weight:bold;">Course Details</span>
+
 </header>
 
 <div class="container">
@@ -489,7 +489,7 @@ async function processRazorpayPayment() {
         currency: "INR",
         name: "QuantAI Learning",
         description: `${courseData[bookingData.courseId].name} Course`,
-        image: "/static/logo.png",
+        image: "/static/logo.png?v=1",
         prefill: {
             name: bookingData.name,
             email: bookingData.email,

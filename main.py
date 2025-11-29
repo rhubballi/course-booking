@@ -130,26 +130,6 @@ def init_courses():
 
 init_courses()
 
-# Ensure bookings table has email and phone columns (add them if missing)
-with engine.connect() as conn:
-    try:
-        cols = [r[1] for r in conn.execute("PRAGMA table_info(bookings)").fetchall()]
-    except Exception:
-        cols = []
-
-    if 'email' not in cols:
-        try:
-            conn.execute(text("ALTER TABLE bookings ADD COLUMN email VARCHAR"))
-            print('Added bookings.email column')
-        except Exception as e:
-            print('Could not add bookings.email:', e)
-    if 'phone' not in cols:
-        try:
-            conn.execute(text("ALTER TABLE bookings ADD COLUMN phone VARCHAR"))
-            print('Added bookings.phone column')
-        except Exception as e:
-            print('Could not add bookings.phone:', e)
-
 # ---------------------------
 # DB Session Dependency
 # ---------------------------
@@ -505,3 +485,16 @@ def book_course(payload: BookingIn, db: Session = Depends(get_db)):
         import traceback
         traceback.print_exc()
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
+
+
+if __name__ == "__main__":
+    import uvicorn
+    port = int(os.getenv("PORT", 8000))
+    print(f"\n{'='*60}")
+    print(f"🌐 Website is running at: http://localhost:{port}")
+    print(f"{'='*60}\n")
+    uvicorn.run(
+        app,
+        host="0.0.0.0",
+        port=port
+    )
