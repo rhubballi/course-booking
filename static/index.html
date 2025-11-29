@@ -1,6 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Digital Courses</title>
     <style>
         * {
@@ -13,22 +15,31 @@
             font-family: 'Segoe UI', sans-serif;
             background: #0f0f0f;
             color: #fff;
-            padding: 40px 20px;
+            padding: 20px;
+            min-height: 100vh;
         }
         
         header {
             text-align: center;
-            margin-bottom: 60px;
+            margin-bottom: 40px;
         }
         
         .logo {
             font-size: 28px;
             font-weight: bold;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 10px;
+            position: relative;
+            flex-wrap: wrap;
+        }
+        
+        .logo img {
+            height: 50px;
+            width: auto;
+            object-fit: contain;
         }
         
         .logo-square {
@@ -38,17 +49,18 @@
         }
         
         h1 {
-            font-size: 48px;
+            font-size: clamp(2rem, 5vw, 48px);
             font-weight: bold;
             margin-bottom: 10px;
         }
         
         .courses-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 40px;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
             max-width: 1200px;
             margin: 0 auto;
+            padding: 0 10px;
         }
         
         .course-card {
@@ -56,13 +68,20 @@
             overflow: hidden;
             border-radius: 12px;
             cursor: pointer;
-            transition: transform 0.3s ease;
-            height: 350px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            min-height: 280px;
             background: #111;
+            aspect-ratio: 1/1;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
         
         .course-card:hover {
-            transform: translateY(-10px);
+            transform: translateY(-8px);
+            box-shadow: 0 8px 25px rgba(255, 215, 0, 0.2);
+        }
+        
+        .course-card:active {
+            transform: translateY(-4px);
         }
         
         .course-card img {
@@ -76,30 +95,123 @@
             bottom: 0;
             left: 0;
             right: 0;
-            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
-            padding: 30px;
+            background: linear-gradient(to top, rgba(0,0,0,0.95), transparent);
+            padding: clamp(15px, 5vw, 30px);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            height: 100%;
         }
         
         .course-overlay h2 {
-            font-size: 28px;
-            margin-bottom: 10px;
+            font-size: clamp(1.2rem, 4vw, 28px);
+            margin-bottom: 8px;
             color: #ffd700;
+            line-height: 1.2;
         }
         
         .course-overlay p {
-            font-size: 14px;
+            font-size: clamp(12px, 3vw, 14px);
             color: #ccc;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
         }
         
         .book-btn {
             background: #ffd700;
             color: #000;
             border: none;
-            padding: 10px 20px;
+            padding: 10px 16px;
             border-radius: 6px;
             font-weight: bold;
             cursor: pointer;
+            font-size: clamp(12px, 3vw, 14px);
+            align-self: flex-start;
+            transition: background 0.2s ease;
+        }
+        
+        .book-btn:hover {
+            background: #ffed4e;
+        }
+        
+        .book-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Tablet Styles */
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+            
+            header {
+                margin-bottom: 30px;
+            }
+            
+            .logo {
+                margin-bottom: 15px;
+            }
+            
+            .logo img {
+                height: 40px;
+            }
+            
+            .courses-grid {
+                grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+                gap: 15px;
+                padding: 0;
+            }
+            
+            .course-card {
+                min-height: 240px;
+            }
+        }
+        
+        /* Mobile Styles */
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            header {
+                margin-bottom: 20px;
+            }
+            
+            h1 {
+                font-size: 28px;
+                margin-bottom: 5px;
+            }
+            
+            .logo img {
+                height: 35px;
+                position: static;
+            }
+            
+            .courses-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+            
+            .course-card {
+                min-height: 200px;
+            }
+            
+            .course-overlay {
+                padding: 15px;
+            }
+            
+            .course-overlay h2 {
+                font-size: 18px;
+            }
+            
+            .course-overlay p {
+                font-size: 12px;
+                margin-bottom: 10px;
+            }
+            
+            .book-btn {
+                padding: 8px 14px;
+                font-size: 12px;
+            }
         }
     </style>
 </head>
