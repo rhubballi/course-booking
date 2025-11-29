@@ -25,7 +25,7 @@
             padding: 12px 15px;
             background: #1a1a1a;
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
             gap: 15px;
             border-bottom: 2px solid #ffd700;
@@ -43,26 +43,6 @@
             height: clamp(35px, 7vw, 50px);
             width: auto;
             object-fit: contain;
-        }
-
-        .back-btn {
-            background: #ffd700;
-            color: #000;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 14px;
-            transition: background 0.2s ease;
-        }
-
-        .back-btn:hover {
-            background: #ffed4e;
-        }
-
-        .back-btn:active {
-            transform: scale(0.95);
         }
 
         .container {
@@ -322,13 +302,14 @@
         }
 
         #qrCodeContainer {
-            display: inline-block !important;
             background: white;
             padding: 10px;
             border-radius: 8px;
             margin: 15px auto;
             display: flex;
             justify-content: center;
+            align-items: center;
+            width: fit-content;
         }
 
         #qrCodeContainer canvas {
@@ -337,8 +318,11 @@
         }
 
         .qr-wrapper {
-            text-align: center;
+            text-align: left;
             margin: 20px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
         }
 
         .qr-wrapper p {
@@ -481,13 +465,6 @@
                 order: 1;
             }
 
-            .back-btn {
-                order: 2;
-                width: 100%;
-                padding: 10px 12px;
-                font-size: 12px;
-            }
-
             .container {
                 grid-template-columns: 1fr;
                 gap: 15px;
@@ -590,7 +567,8 @@
 
             #qrCodeContainer {
                 padding: 8px;
-                margin: 12px auto;
+                margin: 12px 0;
+                width: fit-content;
             }
 
             .steps-box {
@@ -635,7 +613,6 @@
     <div class="logo-header">
         <img src="/static/logo.png?v=1" alt="QuantAI Logo">
     </div>
-    <button class="back-btn" onclick="window.location.href='/'">← Back</button>
 </header>
 
 <div class="container">
