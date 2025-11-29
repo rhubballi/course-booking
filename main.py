@@ -27,6 +27,16 @@ FROM_EMAIL = os.getenv("FROM_EMAIL") or SMTP_USER
 FROM_NAME = os.getenv("FROM_NAME") or "Course Team"
 OWNER_EMAIL = os.getenv("OWNER_EMAIL")
 
+# Log email configuration on startup
+print("="*60)
+print("📧 EMAIL CONFIGURATION:")
+print(f"  SMTP_HOST: {SMTP_HOST}")
+print(f"  SMTP_PORT: {SMTP_PORT}")
+print(f"  SMTP_USER: {SMTP_USER}")
+print(f"  FROM_EMAIL: {FROM_EMAIL}")
+print(f"  OWNER_EMAIL: {OWNER_EMAIL}")
+print("="*60)
+
 # ---------------------------
 # Course Timings
 # ---------------------------
@@ -250,8 +260,9 @@ We look forward to seeing you!
 
     # If SMTP is not configured, or sending fails, write the email to disk
     # so developers can inspect it. Return True if email was sent, False otherwise.
-    if not SMTP_HOST:
+    if not SMTP_HOST or not SMTP_USER or not SMTP_PASS:
         # Save to disk
+        print(f"WARNING: SMTP not fully configured. SMTP_HOST={SMTP_HOST}, SMTP_USER={SMTP_USER}")
         try:
             os.makedirs('outgoing_emails', exist_ok=True)
             fname = os.path.join('outgoing_emails', f"email_{course_id}_{int(time.time())}.html")
@@ -263,20 +274,30 @@ We look forward to seeing you!
         return False
 
     try:
+        print(f"Attempting to send email to {to_email} via SMTP_HOST={SMTP_HOST}")
         with smtplib.SMTP(SMTP_HOST, SMTP_PORT, timeout=10) as smtp:
             # If credentials provided, try secure connection and login
             if SMTP_USER:
                 try:
                     smtp.starttls()
-                except Exception:
+                    print("STARTTLS successful")
+                except Exception as e:
                     # starttls may not be supported; continue anyway
-                    pass
-                smtp.login(SMTP_USER, SMTP_PASS)
+                    print(f"STARTTLS warning (continuing): {e}")
+                try:
+                    smtp.login(SMTP_USER, SMTP_PASS)
+                    print("SMTP login successful")
+                except Exception as e:
+                    print(f"SMTP login failed: {e}")
+                    raise
             # send message
             smtp.send_message(msg)
+        print(f"✓ Email sent successfully to {to_email}")
         return True
     except Exception as e:
-        print("EMAIL ERROR: failed to send via SMTP:", e)
+        print(f"EMAIL ERROR: failed to send via SMTP: {e}")
+        import traceback
+        traceback.print_exc()
         # fallback: save to disk
         try:
             os.makedirs('outgoing_emails', exist_ok=True)
