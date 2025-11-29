@@ -48,6 +48,13 @@ os.makedirs("static", exist_ok=True)
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # ---------------------------
+# Health Check Endpoint
+# ---------------------------
+@app.get("/health")
+def health_check():
+    return {"status": "ok", "message": "Server is running"}
+
+# ---------------------------
 # Serve index.html at "/"
 # ---------------------------
 @app.get("/")
@@ -109,9 +116,18 @@ app.add_middleware(
 )
 
 # ---------------------------
-# Create DB tables
+# Startup event - Initialize DB and courses
 # ---------------------------
-models.Base.metadata.create_all(bind=engine)
+@app.on_event("startup")
+async def startup_event():
+    try:
+        models.Base.metadata.create_all(bind=engine)
+        print("✓ Database tables created successfully")
+        init_courses()
+    except Exception as e:
+        print(f"⚠ Startup initialization error: {e}")
+        import traceback
+        traceback.print_exc()
 
 # Initialize courses if they don't exist
 def init_courses():
@@ -138,8 +154,6 @@ def init_courses():
         db.rollback()
     finally:
         db.close()
-
-init_courses()
 
 # ---------------------------
 # DB Session Dependency
