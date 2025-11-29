@@ -65,11 +65,20 @@ def course_detail_page():
 def debug_check_course_file():
     import os
     path = os.path.join("static", "course-detail.html")
+    static_files = []
+    if os.path.isdir("static"):
+        static_files = os.listdir("static")
+    
     return {
         "cwd": os.getcwd(),
         "path": path,
         "absolute_path": os.path.abspath(path),
-        "exists": os.path.exists(path)
+        "exists": os.path.exists(path),
+        "static_files": static_files,
+        "static_dir_exists": os.path.isdir("static"),
+        "ai_image_exists": os.path.exists("static/AI-Development-Companies-1.png"),
+        "quantum_image_exists": os.path.exists("static/Computacao-Quantica-scaled.png"),
+        "logo_exists": os.path.exists("static/logo.png")
     }
 
 
