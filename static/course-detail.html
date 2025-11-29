@@ -22,14 +22,15 @@
         }
 
         header {
-            padding: 15px;
+            padding: 12px 15px;
             background: #1a1a1a;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            gap: 15px;
             border-bottom: 2px solid #ffd700;
+            min-height: 70px;
             flex-wrap: wrap;
-            gap: 10px;
         }
 
         .logo-header {
@@ -39,7 +40,7 @@
         }
 
         .logo-header img {
-            height: 40px;
+            height: clamp(35px, 7vw, 50px);
             width: auto;
             object-fit: contain;
         }
@@ -67,10 +68,10 @@
         .container {
             max-width: 1200px;
             margin: 20px auto;
-            padding: 0 10px;
+            padding: 0 15px;
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 30px;
+            gap: 40px;
             align-items: start;
         }
 
@@ -78,11 +79,12 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            order: 1;
         }
 
         .course-image img {
             width: 100%;
-            max-width: 400px;
+            max-width: 450px;
             height: auto;
             object-fit: contain;
             background: #111;
@@ -94,6 +96,7 @@
         .course-info {
             display: flex;
             flex-direction: column;
+            order: 2;
         }
 
         .course-info h1 {
@@ -419,17 +422,19 @@
 
             header {
                 padding: 12px;
+                gap: 12px;
             }
 
             .container {
                 grid-template-columns: 1fr;
-                gap: 20px;
+                gap: 25px;
                 margin: 15px auto;
+                padding: 0 10px;
             }
 
             .course-image img {
                 max-width: 100%;
-                max-height: 300px;
+                max-height: 350px;
             }
 
             .payment-modal-content {
@@ -463,18 +468,21 @@
 
             header {
                 padding: 10px;
+                flex-direction: column;
+                gap: 10px;
                 justify-content: center;
-                text-align: center;
+                align-items: stretch;
+                min-height: auto;
             }
 
             .logo-header {
-                order: 2;
                 width: 100%;
                 justify-content: center;
+                order: 1;
             }
 
             .back-btn {
-                order: 1;
+                order: 2;
                 width: 100%;
                 padding: 10px 12px;
                 font-size: 12px;
@@ -484,7 +492,7 @@
                 grid-template-columns: 1fr;
                 gap: 15px;
                 margin: 10px auto;
-                padding: 0 5px;
+                padding: 0 8px;
             }
 
             .course-info h1 {

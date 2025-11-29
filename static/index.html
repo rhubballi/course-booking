@@ -22,22 +22,22 @@
         header {
             text-align: center;
             margin-bottom: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
         }
         
         .logo {
-            font-size: 28px;
-            font-weight: bold;
-            margin-bottom: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 10px;
-            position: relative;
             flex-wrap: wrap;
         }
         
         .logo img {
-            height: 50px;
+            height: clamp(40px, 8vw, 60px);
             width: auto;
             object-fit: contain;
         }
@@ -174,16 +174,21 @@
             
             header {
                 margin-bottom: 20px;
+                gap: 10px;
             }
             
             h1 {
                 font-size: 28px;
                 margin-bottom: 5px;
+                order: 2;
+            }
+            
+            .logo {
+                order: 1;
             }
             
             .logo img {
                 height: 35px;
-                position: static;
             }
             
             .courses-grid {
